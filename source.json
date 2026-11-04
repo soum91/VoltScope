@@ -16,6 +16,16 @@
       "iconURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png",
       "versions": [
         {
+          "version": "0.2.4",
+          "buildVersion": "4",
+          "date": "2026-11-04T04:35:43Z",
+          "localizedDescription": "FindMyBLE LARQ/Find My battery handoff, graceful missing App Group fallback, device-specific battery ring widgets and charging diagnostics.",
+          "changelog": "LARQ and supported Apple device batteries via updated FindMyBLE. Ring widgets now show proper phone, watch, AirPods, case and bottle symbols. Three-part versioning for FlareStore.",
+          "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v0.2.4/VoltScope-unsigned.ipa",
+          "size": 548726,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "0.1.0",
           "buildVersion": "3",
           "date": "2026-11-04T02:50:13Z",
@@ -26,11 +36,11 @@
           "minOSVersion": "16.0"
         }
       ],
-      "version": "0.1.0",
-      "buildVersion": "3",
-      "versionDate": "2026-11-04T02:50:13Z",
-      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v0.1.0-b3/VoltScope-unsigned.ipa",
-      "size": 483798,
+      "version": "0.2.4",
+      "buildVersion": "4",
+      "versionDate": "2026-11-04T04:35:43Z",
+      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v0.2.4/VoltScope-unsigned.ipa",
+      "size": 548726,
       "minOSVersion": "16.0"
     }
   ]
