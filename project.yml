@@ -1,0 +1,68 @@
+name: VoltScope
+options:
+  bundleIdPrefix: com.soumen
+  deploymentTarget:
+    iOS: '16.0'
+  xcodeVersion: '16.0'
+targets:
+  VoltScope:
+    type: application
+    platform: iOS
+    sources:
+      - VoltScope
+      - Shared
+    dependencies:
+      - target: VoltScopeWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope
+        MARKETING_VERSION: '0.1.0'
+        CURRENT_PROJECT_VERSION: '1'
+        SWIFT_VERSION: '5.0'
+        TARGETED_DEVICE_FAMILY: '1'
+        SWIFT_OBJC_BRIDGING_HEADER: VoltScope/VoltScope-Bridging-Header.h
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    entitlements:
+      path: VoltScope/VoltScope.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.soumen.voltscope
+          - group.com.soumen.findmyble
+    info:
+      path: VoltScope/Info.plist
+      properties:
+        CFBundleDisplayName: VoltScope
+        LSApplicationCategoryType: public.app-category.utilities
+        NSBluetoothAlwaysUsageDescription: Reads the battery percentage from nearby Bluetooth accessories that expose a standard battery service.
+        UIBackgroundModes:
+          - bluetooth-central
+        UILaunchScreen: {}
+        CFBundleURLTypes:
+          - CFBundleURLName: com.soumen.voltscope
+            CFBundleURLSchemes:
+              - voltscope
+  VoltScopeWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - VoltScopeWidget
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope.widget
+        MARKETING_VERSION: '0.1.0'
+        CURRENT_PROJECT_VERSION: '1'
+        TARGETED_DEVICE_FAMILY: '1'
+        SWIFT_VERSION: '5.0'
+        SKIP_INSTALL: YES
+    entitlements:
+      path: VoltScopeWidget/VoltScopeWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.soumen.voltscope
+    info:
+      path: VoltScopeWidget/Info.plist
+      properties:
+        CFBundleDisplayName: VoltScope Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

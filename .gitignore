@@ -1,0 +1,12 @@
+.DS_Store
+*.xcuserstate
+xcuserdata/
+.build/
+build/
+DerivedData/
+*.ipa
+*.xcarchive
+*.mobileprovision
+*.p12
+*.cer
+VoltScope.xcodeproj/
