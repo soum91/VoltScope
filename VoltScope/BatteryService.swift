@@ -62,7 +62,6 @@ final class BatteryService: ObservableObject {
         let center = NotificationCenter.default
         for name in [UIDevice.batteryLevelDidChangeNotification,
                      UIDevice.batteryStateDidChangeNotification,
-                     ProcessInfo.powerStateDidChangeNotification,
                      UIApplication.didBecomeActiveNotification,
                      UIApplication.didEnterBackgroundNotification] {
             observers.append(center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in

@@ -511,14 +511,15 @@ struct BatteryCSVDocument: FileDocument {
 
     init(samples: [BatterySample]) {
         var rows = ["timestamp,percentage,state,thermal_state,low_power,voltage_mV,current_mA,temperature_C,cycle_count,design_mAh,max_mAh,source"]
+        func number(_ value: Double?) -> String { value.map { String($0) } ?? "" }
         for sample in samples {
             let fields: [String] = [
                 ISO8601DateFormatter().string(from: sample.date),
                 String(sample.percentage), sample.state, sample.thermalState,
-                String(sample.lowPowerMode), sample.voltageMV.map(String.init) ?? "",
-                sample.currentMA.map(String.init) ?? "", sample.temperatureC.map(String.init) ?? "",
-                sample.cycleCount.map(String.init) ?? "", sample.designCapacityMAh.map(String.init) ?? "",
-                sample.maximumCapacityMAh.map(String.init) ?? "", sample.source.rawValue
+                String(sample.lowPowerMode), number(sample.voltageMV),
+                number(sample.currentMA), number(sample.temperatureC),
+                sample.cycleCount.map { String($0) } ?? "", number(sample.designCapacityMAh),
+                number(sample.maximumCapacityMAh), sample.source.rawValue
             ]
             rows.append(fields.joined(separator: ","))
         }
