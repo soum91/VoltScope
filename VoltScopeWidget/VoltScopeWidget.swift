@@ -1,5 +1,6 @@
 import SwiftUI
 import WidgetKit
+import UIKit
 
 private enum Ink {
     static let background = Color(red: 0.083, green: 0.09, blue: 0.14)
@@ -49,7 +50,26 @@ struct VoltProvider: TimelineProvider {
 
     private func read() -> VoltEntry {
         let archive = SharedBatteryStore.read()
-        return VoltEntry(date: .now, phone: archive.samples.last,
+        var phone = archive.samples.last
+        // A sideloader may strip the widget's App Group entitlement. The
+        // extension can still request its own device's public battery level;
+        // accessory values remain unavailable until the group is restored.
+        if phone == nil {
+            UIDevice.current.isBatteryMonitoringEnabled = true
+            let value = UIDevice.current.batteryLevel
+            if value >= 0 {
+                let state: String
+                switch UIDevice.current.batteryState {
+                case .charging: state = "Charging"
+                case .full: state = "Full"
+                case .unplugged: state = "Unplugged"
+                default: state = "Unknown"
+                }
+                phone = BatterySample(percentage: Double(value * 100), state: state,
+                                      thermalState: "Unknown", lowPowerMode: false, source: .ios)
+            }
+        }
+        return VoltEntry(date: .now, phone: phone,
                          devices: archive.accessories, observedAt: archive.lastSaved)
     }
 }
