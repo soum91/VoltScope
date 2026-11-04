@@ -1,0 +1,37 @@
+{
+  "name": "VoltScope",
+  "identifier": "com.soumen.voltscope.source",
+  "subtitle": "Battery telemetry for iPhone and compatible Bluetooth accessories",
+  "description": "Unsigned native iOS builds. Sign using FlareStore or EmberSign. Privileged hardware readings are best-effort on jailbroken iPhones.",
+  "sourceURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/source.json",
+  "iconURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png",
+  "apps": [
+    {
+      "name": "VoltScope",
+      "bundleIdentifier": "com.soumen.voltscope",
+      "developerName": "soum91",
+      "subtitle": "Battery diagnostics and connected-device monitoring",
+      "localizedDescription": "Charging current and voltage where device permissions allow, battery history and drain analysis, Bluetooth batteries, FindMyBLE LARQ bottle cache, and widgets.",
+      "category": "utilities",
+      "iconURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "buildVersion": "3",
+          "date": "2026-11-04T02:50:13Z",
+          "localizedDescription": "Initial VoltScope battery diagnostics, charging history, BLE accessories, FindMyBLE LARQ battery bridge and three widgets.",
+          "changelog": "Build updated from the latest main branch. Unsigned IPA for sideload signing.",
+          "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v0.1.0-b3/VoltScope-unsigned.ipa",
+          "size": 483798,
+          "minOSVersion": "16.0"
+        }
+      ],
+      "version": "0.1.0",
+      "buildVersion": "3",
+      "versionDate": "2026-11-04T02:50:13Z",
+      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v0.1.0-b3/VoltScope-unsigned.ipa",
+      "size": 483798,
+      "minOSVersion": "16.0"
+    }
+  ]
+}
