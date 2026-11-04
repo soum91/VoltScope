@@ -287,6 +287,7 @@ private struct ChargingView: View {
 
 private struct DevicesView: View {
     @EnvironmentObject private var service: BatteryService
+    @Environment(\.openURL) private var openURL
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
@@ -314,18 +315,35 @@ private struct DevicesView: View {
                     }
                 }
                 Panel {
+                    VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("FindMyBLE integration").font(.headline)
-                            Text(service.findMyBLEAccessible ? "Shared container available" : "Shared container unavailable")
+                            Text(service.findMyBLEAccessible ? "Automatic shared cache available" : "Shared cache blocked by signing")
                                 .font(.caption).foregroundStyle(service.findMyBLEAccessible ? VSStyle.green : VSStyle.secondary)
-                            Text("Reads the latest saved LARQ bottle percentage without replacing your tracker.")
+                            Text("Fetch LARQ and supported Apple device percentages from your FindMyBLE tracker.")
                                 .font(.caption).foregroundStyle(VSStyle.secondary)
                         }
                         Spacer()
                         Button { service.syncFindMyBLE() } label: {
                             Image(systemName: "arrow.clockwise").font(.title3)
                         }.accessibilityLabel("Refresh FindMyBLE")
+                    }
+                    Button {
+                        if let url = URL(string: "findmyble://battery-export") { openURL(url) }
+                    } label: {
+                        Label("Fetch from FindMyBLE", systemImage: "arrow.left.arrow.right")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(VSStyle.cyan)
+                    .foregroundStyle(.black)
+                    Text("Opens FindMyBLE and returns to VoltScope with battery data. Works without App Groups after both apps are updated.")
+                        .font(.caption2).foregroundStyle(VSStyle.secondary)
+                    if let date = service.lastFindMySync {
+                        Text("Last transfer: \(date.formatted(date: .omitted, time: .shortened))")
+                            .font(.caption2).foregroundStyle(VSStyle.green)
+                    }
                     }
                 }
                 SectionHeading(title: "Discovered and tracked", subtitle: "Only compatible devices expose a readable battery level")
@@ -346,7 +364,7 @@ private struct DevicesView: View {
                         Panel { AccessoryRow(item: device, showButton: device.source == .bluetooth) }
                     }
                 }
-                Text("AirPods, Apple Watch and some proprietary accessories may appear in Apple's Batteries widget but don't expose their battery through the public Bluetooth API. Unknown percentages remain blank.")
+                Text("Find My may report battery for selected Apple devices. It does not always report AirPods case or separate left/right earbud levels. Unknown percentages remain blank.")
                     .font(.caption).foregroundStyle(VSStyle.secondary).padding(.horizontal, 4)
             }.padding(18)
         }
@@ -362,8 +380,7 @@ private struct AccessoryRow: View {
     let showButton: Bool
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: item.name.lowercased().contains("larq") || item.name.lowercased().contains("bottle")
-                  ? "water.waves" : "battery.75percent")
+            Image(systemName: item.iconName)
                 .font(.title2).foregroundStyle(VSStyle.cyan)
                 .frame(width: 36)
             VStack(alignment: .leading, spacing: 4) {

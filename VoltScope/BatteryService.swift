@@ -25,6 +25,7 @@ final class BatteryService: ObservableObject {
 
     private let ble = BluetoothBatteryScanner()
     private var bleReadings: [AccessoryBattery] = []
+    private var importedReadings: [AccessoryBattery] = []
     private var archivedAccessories: [AccessoryBattery] = []
     private var timer: Timer?
     private var observers: [NSObjectProtocol] = []
@@ -35,6 +36,7 @@ final class BatteryService: ObservableObject {
     var latest: BatterySample? { samples.last }
     var hasDiagnostics: Bool { latest?.source == .diagnostic }
     var findMyBLEAccessible: Bool { FindMyBLEBridge.available }
+    @Published private(set) var lastFindMySync: Date?
     var widgetShared: Bool { SharedBatteryStore.sharedContainerAvailable }
 
     init() {
@@ -123,6 +125,13 @@ final class BatteryService: ObservableObject {
     func disconnectDevice(_ id: String) { ble.disconnect(id) }
     func syncFindMyBLE() { mergeAccessories() }
 
+    func importFindMyBLE(_ url: URL) {
+        guard let readings = FindMyBLEBridge.importURL(url) else { return }
+        importedReadings = readings
+        lastFindMySync = .now
+        mergeAccessories()
+    }
+
     private func pruneSamples() {
         let cutoff = Date().addingTimeInterval(-14 * 86_400)
         samples.removeAll { $0.date < cutoff }
@@ -132,7 +141,14 @@ final class BatteryService: ObservableObject {
     private func mergeAccessories() {
         let fromFindMyBLE = FindMyBLEBridge.readAccessories()
         var byID = Dictionary(uniqueKeysWithValues: archivedAccessories.map { ($0.id, $0) })
-        for item in fromFindMyBLE + bleReadings { byID[item.id] = item }
+        // Prefer readings with a percentage and never replace a newer one
+        // with an old/unknown value from a different source.
+        for item in fromFindMyBLE + importedReadings + bleReadings {
+            if let existing = byID[item.id],
+               existing.percentage != nil,
+               (item.percentage == nil || existing.updated > item.updated) { continue }
+            byID[item.id] = item
+        }
         // Do not silently delete a disconnected accessory's last reading.
         accessories = byID.values.sorted { ($0.connected ? 0 : 1, $0.name) < ($1.connected ? 0 : 1, $1.name) }
         archivedAccessories = accessories

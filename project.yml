@@ -16,7 +16,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope
-        MARKETING_VERSION: '0.1.0'
+        MARKETING_VERSION: '0.2.0'
         CURRENT_PROJECT_VERSION: '1'
         SWIFT_VERSION: '5.0'
         TARGETED_DEVICE_FAMILY: '1'
@@ -50,7 +50,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope.widget
-        MARKETING_VERSION: '0.1.0'
+        MARKETING_VERSION: '0.2.0'
         CURRENT_PROJECT_VERSION: '1'
         TARGETED_DEVICE_FAMILY: '1'
         SWIFT_VERSION: '5.0'

@@ -24,7 +24,8 @@ jobs:
           xcodebuild -project VoltScope.xcodeproj -scheme VoltScope \
             -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' \
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
-            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" build
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+            MARKETING_VERSION="0.2.${GITHUB_RUN_NUMBER}" build
       - name: Package unsigned IPA
         run: |
           mkdir -p Payload
@@ -40,11 +41,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v0.1.0-b${GITHUB_RUN_NUMBER}"
+          tag="v0.2.${GITHUB_RUN_NUMBER}"
           gh release view "$tag" >/dev/null 2>&1 || \
             gh release create "$tag" VoltScope-unsigned.ipa \
-              --title "VoltScope 0.1.0 (build ${GITHUB_RUN_NUMBER})" \
-              --notes "Unsigned iPhone IPA. Sign before sideloading. Includes charging diagnostics, BLE batteries, FindMyBLE cache bridge and widgets."
+              --title "VoltScope 0.2.${GITHUB_RUN_NUMBER}" \
+              --notes "Unsigned iPhone IPA. Sign before sideloading. Adds FindMyBLE battery handoff, Find My Apple device battery import, and device-ring widgets. Update FindMyBLE too."
       - name: Refresh FlareStore feed
         run: |
           python3 .github/scripts/publish_feed.py VoltScope-unsigned.ipa

@@ -11,6 +11,7 @@ struct VoltScopeApp: App {
                 .environmentObject(service)
                 .preferredColorScheme(.dark)
                 .onAppear { service.start() }
+                .onOpenURL { url in service.importFindMyBLE(url) }
                 .onChange(of: scenePhase) { phase in
                     if phase == .active { service.refresh() }
                 }

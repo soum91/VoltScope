@@ -26,9 +26,10 @@ def main() -> None:
     if not build or not build.isdecimal():
         raise SystemExit("GITHUB_RUN_NUMBER must be a positive decimal value")
 
-    version = "0.1.0"
+    # Three numeric components match FlareStore's displayed/compared version.
+    version = f"0.2.{build}"
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    tag = f"v{version}-b{build}"
+    tag = f"v{version}"
     download_url = f"https://github.com/{repo}/releases/download/{tag}/VoltScope-unsigned.ipa"
     icon_url = f"https://raw.githubusercontent.com/{repo}/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png"
     feed_url = f"https://raw.githubusercontent.com/{repo}/main/source.json"
@@ -45,8 +46,8 @@ def main() -> None:
         "version": version,
         "buildVersion": build,
         "date": now,
-        "localizedDescription": "Initial VoltScope battery diagnostics, charging history, BLE accessories, FindMyBLE LARQ battery bridge and three widgets.",
-        "changelog": "Build updated from the latest main branch. Unsigned IPA for sideload signing.",
+        "localizedDescription": "FindMyBLE LARQ/Find My battery handoff, graceful missing App Group fallback, device-specific battery ring widgets and charging diagnostics.",
+        "changelog": "LARQ and supported Apple device batteries via updated FindMyBLE. Ring widgets now show proper phone, watch, AirPods, case and bottle symbols. Three-part versioning for FlareStore.",
         "downloadURL": download_url,
         "size": ipa_path.stat().st_size,
         "minOSVersion": "16.0",

@@ -2,7 +2,7 @@
 
 **Native iPhone battery diagnostics, history, BLE accessories, FindMyBLE integration and widgets.**
 
-Version `0.1.0` is an unsigned native iOS build. The GitHub Actions workflow compiles an IPA on macOS, publishes a versioned GitHub release, and refreshes `repo.json` and `source.json` for FlareStore-compatible updates.
+Version `0.2.x` is an unsigned native iOS build. GitHub Actions compiles an IPA on macOS, publishes a versioned GitHub release, and refreshes `repo.json` and `source.json`. The final version component increments on every build so FlareStore detects updates.
 
 ## What is implemented
 
@@ -11,8 +11,8 @@ Version `0.1.0` is an unsigned native iOS build. The GitHub Actions workflow com
 - Offline 14-day recorded battery timeline, regression-based charge/discharge rates, estimated remaining time and unusual-drain warning.
 - A *best-effort, optional* runtime IORegistry probe for AppleSmartBattery hardware properties on jailbroken or otherwise privileged devices: signed pack current, voltage, temperature, cycle count and capacities. All unavailable data is left blank, never faked.
 - On-demand foreground Bluetooth scan (18 seconds) and Battery Service `180F` / Battery Level `2A19` discovery; cache last readings.
-- **Read-only FindMyBLE integration:** reads `snapshot.json` from `group.com.soumen.findmyble` (your existing [FindMyBLE](https://github.com/soum91/FindMyBLE) stores the LARQ battery value there). No LARQ protocol reverse-engineering and no competing connection are necessary when this group is shared. If the group isn't available, use VoltScope's BLE reader to connect to the bottle directly.
-- Three WidgetKit widgets: iPhone small/medium, accessory medium, and circular Lock Screen.
+- **FindMyBLE integration:** reads `voltscope-batteries.json` from FindMyBLE's App Group when signing allows it. If not, tap **Fetch from FindMyBLE** in VoltScope; the updated FindMyBLE app returns a battery-only deep link. This transports LARQ's last reading plus device batteries reported by Find My without requesting the user's iCloud credentials in VoltScope.
+- WidgetKit: iPhone small/medium, four-ring device medium, eight-device large, circular and rectangular Lock Screen. Icons are selected for iPhone, Watch, AirPods, charging case, LARQ bottle, and more. Unknown levels are shown as dashes, never fabricated values.
 - Native Files picker for exporting local battery history as CSV.
 - Local data only. No cloud service, advertising, analytics or credentials.
 
@@ -42,7 +42,7 @@ FlareStore source URL (plain text):
 
 ## FindMyBLE App Group signing
 
-FindMyBLE publishes a JSON snapshot to `group.com.soumen.findmyble` when its monitor observes new batteries. VoltScope reads that cache only if both apps have **matching effective App Group access** after signing. If your sideloader renames/removes entitlements or signs them with different teams, sharing will not work; the Devices screen says so. VoltScope's own widget similarly requires `group.com.soumen.voltscope` on both app and extension. Some free-signing methods cannot provide App Group entitlements.
+FindMyBLE publishes a battery-only JSON snapshot to its group, alongside its existing widget cache. VoltScope reads it if both signed apps have matching effective App Group access. If your sideloader renames/removes entitlements or signs the apps with different teams, tap **Fetch from FindMyBLE**. That opens FindMyBLE using `findmyble://battery-export` and returns to `voltscope://import-batteries` with battery-only data. Both apps must be updated for this handoff. No locations, cookies, or Apple ID passwords are transferred. The VoltScope widget still requires a valid shared App Group between VoltScope and its own widget extension.
 
 ## Security and battery cost
 
@@ -53,4 +53,4 @@ FindMyBLE publishes a JSON snapshot to `group.com.soumen.findmyble` when its mon
 
 ## Next milestone
 
-Run the unsigned build workflow, test on iPhone 17 and jailbroken iPhone 13 Pro Max, then refine the IORegistry key mappings from actual (redacted) diagnostic outputs. If the FindMyBLE App Group is unavailable after signing, add an explicit user-authorized export/deep-link bridge to FindMyBLE rather than assuming sandbox access.
+Run the unsigned build workflow, test on iPhone 17 and jailbroken iPhone 13 Pro Max, then refine the IORegistry key mappings from actual (redacted) diagnostic outputs. Confirm FindMyBLE's Find My feed reports each requested device before expecting a percentage: not every AirPods or Watch battery component is exposed there.
