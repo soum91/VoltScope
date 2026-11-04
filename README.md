@@ -2,7 +2,7 @@
 
 **Native iPhone battery diagnostics, history, BLE accessories, FindMyBLE integration and widgets.**
 
-Version `0.1.0` is a source-first preview. The supplied GitHub Actions workflow builds an **unsigned** IPA on macOS, to be signed with your own sideloader. No IPA is claimed until that build passes.
+Version `0.1.0` is an unsigned native iOS build. The GitHub Actions workflow compiles an IPA on macOS, publishes a versioned GitHub release, and refreshes `repo.json` and `source.json` for FlareStore-compatible updates.
 
 ## What is implemented
 
@@ -34,7 +34,11 @@ xcodegen generate
 open VoltScope.xcodeproj
 ```
 
-Choose your own signing team under the app and widget targets. For IPA built without signing, the included GitHub Actions workflow generates an `VoltScope-unsigned-ipa` artifact on pushes to `main` or manual dispatch. Sign the binary with a trusted sideloader before installing it.
+Choose your own signing team under the app and widget targets. For IPA built without signing, the included GitHub Actions workflow generates a `VoltScope-unsigned-ipa` artifact **and a permanent versioned release** on pushes to `main` or manual dispatch. Both `repo.json` and `source.json` point at that release, and the build version increments with each workflow run. Sign the binary with a trusted sideloader before installing it.
+
+FlareStore source URL (plain text):
+
+`https://raw.githubusercontent.com/soum91/VoltScope/main/repo.json`
 
 ## FindMyBLE App Group signing
 
