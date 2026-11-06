@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "name": "iOS app",
+      "evidence": [
+        {
+          "path": "VoltScope/RootView.swift",
+          "contains": [
+            "LabeledContent(\"Version\"",
+            "LabeledContent(\"Build\"",
+            "CFBundleShortVersionString",
+            "CFBundleVersion"
+          ]
+        }
+      ]
+    }
+  ]
+}
