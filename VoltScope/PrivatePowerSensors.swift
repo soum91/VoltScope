@@ -144,9 +144,11 @@ final class PrivatePowerSensors {
         let batteryWatts = batteryVoltage.flatMap { voltage in chargeCurrent.map { voltage * $0 } }
         // Some models report only one of several USB input paths (e.g. half of
         // total input). Suppress the total instead of presenting it as measured.
-        let inputWatts = rawInput.flatMap { input in
-            if let batteryWatts, batteryWatts > input * 1.10 + 0.3 { return nil }
-            return input
+        let inputWatts: Double?
+        if let rawInput, let batteryWatts, batteryWatts > rawInput * 1.10 + 0.3 {
+            inputWatts = nil
+        } else {
+            inputWatts = rawInput
         }
         let temperatures = batteryTemperatures.sorted()
         let batteryTemperature = temperatures.isEmpty ? nil : temperatures[temperatures.count / 2]
