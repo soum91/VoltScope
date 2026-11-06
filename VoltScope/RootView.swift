@@ -604,7 +604,11 @@ private struct SettingsView: View {
                     Text("Charging current is battery-pack current, not the charger's wall-input power. Its sign can differ by battery controller.")
                     Text("Only accessories exposing a readable BLE battery service, or entries accessible from FindMyBLE's cache, can report percentages.")
                 }.font(.footnote)
-                Section { Text("VoltScope 0.1.0 • Built for iOS 16 and newer") }
+                Section("Installed build") {
+                    LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")
+                    LabeledContent("Build", value: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown")
+                    LabeledContent("Bundle ID", value: Bundle.main.bundleIdentifier ?? "Unknown")
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)

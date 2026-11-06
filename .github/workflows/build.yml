@@ -25,7 +25,20 @@ jobs:
             -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' \
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
             CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
-            MARKETING_VERSION="0.2.${GITHUB_RUN_NUMBER}" build
+            MARKETING_VERSION="1.1.${GITHUB_RUN_NUMBER}" build
+      - name: Verify and normalize embedded app versions
+        run: |
+          version="1.1.${GITHUB_RUN_NUMBER}"
+          for info in \
+            build/Build/Products/Release-iphoneos/VoltScope.app/Info.plist \
+            build/Build/Products/Release-iphoneos/VoltScope.app/PlugIns/VoltScopeWidget.appex/Info.plist; do
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" "$info"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${GITHUB_RUN_NUMBER}" "$info"
+            actual=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$info")
+            build=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$info")
+            test "$actual" = "$version"
+            test "$build" = "$GITHUB_RUN_NUMBER"
+          done
       - name: Package unsigned IPA
         run: |
           mkdir -p Payload
@@ -41,10 +54,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag="v0.2.${GITHUB_RUN_NUMBER}"
+          tag="v1.1.${GITHUB_RUN_NUMBER}"
           gh release view "$tag" >/dev/null 2>&1 || \
             gh release create "$tag" VoltScope-unsigned.ipa \
-              --title "VoltScope 0.2.${GITHUB_RUN_NUMBER}" \
+              --title "VoltScope 1.1.${GITHUB_RUN_NUMBER}" \
               --notes "Unsigned iPhone IPA. Sign before sideloading. Adds live, on-device private HID charger/cell electrical sensor readings when available, with separate USB input metrics, three-second foreground refresh, and honest unsupported-value handling. Includes FindMyBLE integration and device-ring widgets."
       - name: Refresh FlareStore feed
         run: |

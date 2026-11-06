@@ -16,7 +16,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope
-        MARKETING_VERSION: '0.2.0'
+        MARKETING_VERSION: '1.1.0'
         CURRENT_PROJECT_VERSION: '1'
         SWIFT_VERSION: '5.0'
         TARGETED_DEVICE_FAMILY: '1'
@@ -31,6 +31,8 @@ targets:
     info:
       path: VoltScope/Info.plist
       properties:
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleDisplayName: VoltScope
         LSApplicationCategoryType: public.app-category.utilities
         NSBluetoothAlwaysUsageDescription: Reads the battery percentage from nearby Bluetooth accessories that expose a standard battery service.
@@ -50,7 +52,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.soumen.voltscope.widget
-        MARKETING_VERSION: '0.2.0'
+        MARKETING_VERSION: '1.1.0'
         CURRENT_PROJECT_VERSION: '1'
         TARGETED_DEVICE_FAMILY: '1'
         SWIFT_VERSION: '5.0'
@@ -63,6 +65,8 @@ targets:
     info:
       path: VoltScopeWidget/Info.plist
       properties:
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleDisplayName: VoltScope Widgets
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension

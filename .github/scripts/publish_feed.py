@@ -27,7 +27,7 @@ def main() -> None:
         raise SystemExit("GITHUB_RUN_NUMBER must be a positive decimal value")
 
     # Three numeric components match FlareStore's displayed/compared version.
-    version = f"0.2.{build}"
+    version = f"1.1.{build}"
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
     tag = f"v{version}"
     download_url = f"https://github.com/{repo}/releases/download/{tag}/VoltScope-unsigned.ipa"

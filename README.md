@@ -2,7 +2,7 @@
 
 **Native iPhone battery diagnostics, history, BLE accessories, FindMyBLE integration and widgets.**
 
-Version `0.2.x` is an unsigned native iOS build. GitHub Actions compiles an IPA on macOS, publishes a versioned GitHub release, and refreshes `repo.json` and `source.json`. The final version component increments on every build so FlareStore detects updates.
+Version `1.1.x` is an unsigned native iOS build. GitHub Actions compiles an IPA on macOS, publishes a versioned GitHub release, and refreshes `repo.json` and `source.json`. The final version component increments on every build so FlareStore detects updates. Releases before 1.1 had incorrect embedded `1.0 (1)` iOS metadata even when their JSON version changed; 1.1+ explicitly sets and verifies the version inside both the app and its widget.
 
 ## What is implemented
 
