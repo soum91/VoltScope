@@ -8,8 +8,36 @@ struct HardwareMetrics {
     var designCapacityMAh: Double?
     var maximumCapacityMAh: Double?
     var remainingCapacityMAh: Double?
+    var usbInputVoltageMV: Double?
+    var usbInputCurrentMA: Double?
+    var usbInputWatts: Double?
+    var sensorCount: Int = 0
+    var sensorKeys: [String] = []
 
-    static func read() -> HardwareMetrics? {
+    // Exactly one HID event-system client per process. Creating more than one
+    // can cause the system to respond with NaNs on subsequent reads.
+    private static let hid = PrivatePowerSensors()
+
+    static func read(chargerConnected: Bool) -> HardwareMetrics? {
+        let registry = readRegistry()
+        let live = hid?.read(chargerConnected: chargerConnected)
+        var result = registry ?? HardwareMetrics()
+        result.voltageMV = result.voltageMV ?? live?.batteryVoltageMV
+        result.currentMA = result.currentMA ?? live?.chargeCurrentMA
+        result.temperatureC = result.temperatureC ?? live?.batteryTemperatureC
+        result.usbInputVoltageMV = live?.usbVoltageMV
+        result.usbInputCurrentMA = live?.usbCurrentMA
+        result.usbInputWatts = live?.usbInputWatts
+        result.sensorCount = live?.serviceCount ?? 0
+        result.sensorKeys = live?.measuredKeys ?? []
+        guard result.voltageMV != nil || result.currentMA != nil || result.temperatureC != nil ||
+              result.cycleCount != nil || result.maximumCapacityMAh != nil || result.usbInputWatts != nil else {
+            return nil
+        }
+        return result
+    }
+
+    private static func readRegistry() -> HardwareMetrics? {
         guard let buffer = VSReadBatteryPropertiesPlist() else { return nil }
         defer { VSFreeBatteryPropertiesPlist(buffer) }
         guard let data = String(cString: buffer).data(using: .utf8) else { return nil }
@@ -53,7 +81,7 @@ struct HardwareMetrics {
             maximumCapacityMAh: capacity(["AppleRawMaxCapacity", "NominalChargeCapacity", "MaxCapacity"]),
             remainingCapacityMAh: capacity(["AppleRawCurrentCapacity", "BatteryCurrentCapacity", "CurrentCapacity"])
         )
-        return (metrics.voltageMV != nil || metrics.currentMA != nil || metrics.cycleCount != nil || metrics.maximumCapacityMAh != nil)
+        return (metrics.voltageMV != nil || metrics.currentMA != nil || metrics.temperatureC != nil || metrics.cycleCount != nil || metrics.maximumCapacityMAh != nil)
             ? metrics : nil
     }
 }

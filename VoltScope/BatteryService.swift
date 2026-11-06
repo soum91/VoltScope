@@ -19,6 +19,7 @@ struct DailyDrain: Identifiable {
 @MainActor
 final class BatteryService: ObservableObject {
     @Published private(set) var samples: [BatterySample] = []
+    @Published private(set) var liveSample: BatterySample?
     @Published private(set) var accessories: [AccessoryBattery] = []
     @Published private(set) var scanning = false
     @Published var bluetoothMessage: String?
@@ -33,7 +34,7 @@ final class BatteryService: ObservableObject {
     private var lastWidgetRefresh: Date = .distantPast
     private var lastWidgetSignature = ""
 
-    var latest: BatterySample? { samples.last }
+    var latest: BatterySample? { liveSample ?? samples.last }
     var hasDiagnostics: Bool { latest?.source == .diagnostic }
     var findMyBLEAccessible: Bool { FindMyBLEBridge.available }
     @Published private(set) var lastFindMySync: Date?
@@ -58,7 +59,9 @@ final class BatteryService: ObservableObject {
         started = true
         UIDevice.current.isBatteryMonitoringEnabled = true
         refresh()
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+        // Electrical readings change within seconds. History still writes only
+        // periodic observations and widgets remain governed by WidgetKit.
+        timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.refresh() }
         }
         let center = NotificationCenter.default
@@ -91,7 +94,7 @@ final class BatteryService: ObservableObject {
         case .critical: thermal = "Critical"
         @unknown default: thermal = "Unknown"
         }
-        let metrics = HardwareMetrics.read()
+        let metrics = HardwareMetrics.read(chargerConnected: state == "Charging" || state == "Full")
         let percentage = value >= 0 ? Double(value * 100) : (samples.last?.percentage ?? 0)
         let sample = BatterySample(
             percentage: percentage, state: state,
@@ -104,14 +107,20 @@ final class BatteryService: ObservableObject {
             designCapacityMAh: metrics?.designCapacityMAh,
             maximumCapacityMAh: metrics?.maximumCapacityMAh,
             remainingCapacityMAh: metrics?.remainingCapacityMAh,
-            source: metrics == nil ? .ios : .diagnostic
+            source: metrics == nil ? .ios : .diagnostic,
+            usbInputWatts: metrics?.usbInputWatts,
+            usbInputVoltageMV: metrics?.usbInputVoltageMV,
+            usbInputCurrentMA: metrics?.usbInputCurrentMA,
+            sensorCount: metrics?.sensorCount,
+            sensorKeys: metrics?.sensorKeys
         )
+        liveSample = sample
         // Avoid duplicate readings from a burst of device notifications.
-        if let previous = samples.last, sample.date.timeIntervalSince(previous.date) < 20,
+        if let previous = samples.last, sample.date.timeIntervalSince(previous.date) < 30,
            sample.percentage == previous.percentage, sample.state == previous.state,
            sample.thermalState == previous.thermalState {
-            // Device accessory snapshots still need updating.
-            mergeAccessories()
+            // Keep the live UI ticking without rewriting the full 14-day
+            // archive on every 3-second HID sample.
             return
         }
         samples.append(sample)

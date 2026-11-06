@@ -45,7 +45,7 @@ jobs:
           gh release view "$tag" >/dev/null 2>&1 || \
             gh release create "$tag" VoltScope-unsigned.ipa \
               --title "VoltScope 0.2.${GITHUB_RUN_NUMBER}" \
-              --notes "Unsigned iPhone IPA. Sign before sideloading. Adds FindMyBLE battery handoff, Find My Apple device battery import, and device-ring widgets. Update FindMyBLE too."
+              --notes "Unsigned iPhone IPA. Sign before sideloading. Adds live, on-device private HID charger/cell electrical sensor readings when available, with separate USB input metrics, three-second foreground refresh, and honest unsupported-value handling. Includes FindMyBLE integration and device-ring widgets."
       - name: Refresh FlareStore feed
         run: |
           python3 .github/scripts/publish_feed.py VoltScope-unsigned.ipa

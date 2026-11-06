@@ -10,6 +10,7 @@ Version `0.2.x` is an unsigned native iOS build. GitHub Actions compiles an IPA 
 - Four views: Overview, Charging Lab, Devices and Energy Insights.
 - Offline 14-day recorded battery timeline, regression-based charge/discharge rates, estimated remaining time and unusual-drain warning.
 - A *best-effort, optional* runtime IORegistry probe for AppleSmartBattery hardware properties on jailbroken or otherwise privileged devices: signed pack current, voltage, temperature, cycle count and capacities. All unavailable data is left blank, never faked.
+- **New: real charging telemetry directly on stock iOS when exposed.** A read-only private HID probe samples Apple vendor power sensors. The Charging Lab separately displays current into the battery, battery rail voltage and power, battery temperature, and complete USB-C input volts/amps/watts. The probe uses one event client per process, refreshes every three seconds while VoltScope is active, and rescans when charger connection changes. Some phone/iOS combinations hide the sensors entirely. See [third-party notices](THIRD_PARTY_NOTICES.md).
 - On-demand foreground Bluetooth scan (18 seconds) and Battery Service `180F` / Battery Level `2A19` discovery; cache last readings.
 - **FindMyBLE integration:** reads `voltscope-batteries.json` from FindMyBLE's App Group when signing allows it. If not, tap **Fetch from FindMyBLE** in VoltScope; the updated FindMyBLE app returns a battery-only deep link. This transports LARQ's last reading plus device batteries reported by Find My without requesting the user's iCloud credentials in VoltScope.
 - WidgetKit: iPhone small/medium, four-ring device medium, eight-device large, circular and rectangular Lock Screen. Icons are selected for iPhone, Watch, AirPods, charging case, LARQ bottle, and more. Unknown levels are shown as dashes, never fabricated values.
@@ -18,7 +19,9 @@ Version `0.2.x` is an unsigned native iOS build. GitHub Actions compiles an IPA 
 
 ## Important iOS limits
 
-**Stock iOS cannot supply battery pack current, voltage, cycle count, health or the system's per-app battery consumption through ordinary third-party public APIs.** The hardware probe might work on a jailbroken device with suitable privileges. A jailbreak alone does not guarantee access; sandbox entitlements and iOS versions differ. It will degrade gracefully.
+**Public iOS APIs still cannot provide battery current, voltage, cycle count, health or per-app consumption.** However, research by the MiniWatts and ios-charging-monitor authors establishes that some battery-charge and USB input rails can be read through private, sandbox-accessible HID sensors on recent iPhones. VoltScope now probes those sensors, with strict value checks and labels distinguishing input power from battery-side power. There is no jailbreak or sandbox escape. Private APIs may change at any time and readings remain unavailable on unsupported hardware.
+
+The battery charging-current endpoint `IQ0B` does **not** measure discharging current and returns zero when unplugged, so VoltScope intentionally hides it then. USB readings are hidden when an incomplete input path would incorrectly imply that the phone receives less power than the battery itself. Wireless/MagSafe has no reliably exposed measured input current on many models. Battery health and cycle count still require privileged access or external diagnostics.
 
 Apple's own per-app percentages remain in **Settings → Battery**. VoltScope detects broad drain periods, not which other apps caused them. AirPods and Apple Watch battery percentages aren't exposed to ordinary third-party apps as a universal API. BLE devices must implement a readable standard Battery Service or be exported through FindMyBLE.
 
@@ -48,6 +51,7 @@ FindMyBLE publishes a battery-only JSON snapshot to its group, alongside its exi
 
 - No hard-coded Apple ID, pairing or LARQ credentials.
 - No privileged API is invoked unless opened dynamically at runtime; probe failure is safe.
+- The private HID probe requires no entitlement or exploit, but sideloading is required; Apple does not promise that these APIs will remain available. Its three-second refresh runs only while iOS permits the app to execute. Widget refresh rates stay system-controlled.
 - Bluetooth is scanned only by explicit request and stops after 18 seconds to avoid creating the very drain we're measuring.
 - No fake per-app attribution, hidden tracking, or claims of access to Apple's private Batteries widget list.
 

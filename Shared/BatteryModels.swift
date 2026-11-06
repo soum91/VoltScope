@@ -22,6 +22,13 @@ struct BatterySample: Codable, Identifiable {
     var maximumCapacityMAh: Double?
     var remainingCapacityMAh: Double?
     var source: ReadingSource
+    /// Only the input power actually measured by USB-C sensors. Nil for
+    /// wireless or partial USB-path measurements, never estimated from %.
+    var usbInputWatts: Double? = nil
+    var usbInputVoltageMV: Double? = nil
+    var usbInputCurrentMA: Double? = nil
+    var sensorCount: Int? = nil
+    var sensorKeys: [String]? = nil
 
     var watts: Double? {
         guard let voltageMV, let currentMA else { return nil }

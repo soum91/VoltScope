@@ -182,8 +182,8 @@ private struct DashboardView: View {
                 HStack(spacing: 8) {
                     Image(systemName: service.hasDiagnostics ? "checkmark.shield.fill" : "lock.shield")
                     Text(service.hasDiagnostics
-                         ? "Enhanced hardware diagnostic readings active"
-                         : "Hardware current, voltage and cycles require privileged access")
+                         ? "Device sensor readings available. Values refresh while VoltScope is open."
+                         : "Private sensors unavailable on this device. Battery levels and trends still work.")
                 }.font(.caption).foregroundStyle(VSStyle.secondary).padding(.horizontal, 4)
             }
             .padding(18)
@@ -239,16 +239,36 @@ private struct ChargingView: View {
                     }
                 }
                 HStack(spacing: 10) {
-                    MetricTile(title: "Current", value: format(s?.currentMA, unit: "mA", digits: 0),
-                               detail: "Signed pack current")
+                    MetricTile(title: "Cell current", value: format(s?.currentMA, unit: "mA", digits: 0),
+                               detail: "Measured while charging, not discharge")
                     MetricTile(title: "Voltage", value: format(s?.voltageMV, unit: "mV", digits: 0),
                                detail: "Cell voltage")
                 }
                 HStack(spacing: 10) {
                     MetricTile(title: "Pack power", value: format(s?.watts, unit: "W", digits: 2),
-                               detail: "|V × I| • not charger input", tint: VSStyle.green)
+                               detail: "Measured power into battery", tint: VSStyle.green)
                     MetricTile(title: "Temperature", value: format(s?.temperatureC, unit: "°C", digits: 1),
-                               detail: "Sensor if exposed", tint: .orange)
+                               detail: "Battery sensor if exposed", tint: .orange)
+                }
+                SectionHeading(title: "USB-C input", subtitle: "Measured separately from power reaching the battery")
+                HStack(spacing: 10) {
+                    MetricTile(title: "From charger", value: format(s?.usbInputWatts, unit: "W", digits: 2),
+                               detail: "Actual input if complete", tint: VSStyle.green)
+                    MetricTile(title: "Port voltage", value: format(s?.usbInputVoltageMV, unit: "mV", digits: 0),
+                               detail: "USB rail, not cell")
+                    MetricTile(title: "Port current", value: format(s?.usbInputCurrentMA, unit: "mA", digits: 0),
+                               detail: "USB rail, not cell")
+                }
+                if let keys = s?.sensorKeys, !keys.isEmpty {
+                    Panel {
+                        Label("On-device sensors active", systemImage: "waveform.path.ecg")
+                            .font(.subheadline.bold()).foregroundStyle(VSStyle.green)
+                        Text("\(s?.sensorCount ?? 0) endpoints • keys: \(keys.joined(separator: ", "))")
+                            .font(.caption2.monospaced()).foregroundStyle(VSStyle.secondary)
+                            .textSelection(.enabled)
+                        Text("Readings are device dependent. iOS may hide some sensors or publish only a partial USB input path.")
+                            .font(.caption).foregroundStyle(VSStyle.secondary)
+                    }
                 }
                 SectionHeading(title: "Battery condition")
                 Panel {
@@ -272,9 +292,9 @@ private struct ChargingView: View {
                 }
                 if !service.hasDiagnostics {
                     Panel {
-                        Label("iOS restriction", systemImage: "info.circle.fill")
+                        Label("iOS sensor restrictions", systemImage: "info.circle.fill")
                             .font(.headline).foregroundStyle(VSStyle.cyan)
-                        Text("Stock iOS does not publish charging amperage, battery cell voltage, or cycle count to third-party apps. Values stay Unavailable rather than showing invented numbers. On a jailbroken device, the best-effort IORegistry probe may expose them.")
+                        Text("VoltScope probes read-only private HID power sensors and the IOKit battery registry. Private APIs are device-specific and can stop working after an update. Cycle count, health and discharge current remain unavailable without additional privileges. Missing or partial data stays blank.")
                             .font(.subheadline).foregroundStyle(VSStyle.secondary)
                     }
                 }
