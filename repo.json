@@ -16,6 +16,16 @@
       "iconURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png",
       "versions": [
         {
+          "version": "1.1.11",
+          "buildVersion": "11",
+          "date": "2026-11-06T20:36:58Z",
+          "localizedDescription": "Read-only on-device HID sensor probe for measured USB-C charging input, battery cell current and voltage, and temperature where exposed. Includes FindMyBLE handoff and device-ring widgets.",
+          "changelog": "Measured USB-C input watts, current and voltage separately from battery charging power. Three-second foreground refresh, sensor-key diagnostics, device-specific icons and FindMyBLE integration. Missing and partial readings stay blank.",
+          "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.11/VoltScope-unsigned.ipa",
+          "size": 623924,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.1.10",
           "buildVersion": "10",
           "date": "2026-11-06T20:34:43Z",
@@ -86,11 +96,11 @@
           "minOSVersion": "16.0"
         }
       ],
-      "version": "1.1.10",
-      "buildVersion": "10",
-      "versionDate": "2026-11-06T20:34:43Z",
-      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.10/VoltScope-unsigned.ipa",
-      "size": 623257,
+      "version": "1.1.11",
+      "buildVersion": "11",
+      "versionDate": "2026-11-06T20:36:58Z",
+      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.11/VoltScope-unsigned.ipa",
+      "size": 623924,
       "minOSVersion": "16.0"
     }
   ]
