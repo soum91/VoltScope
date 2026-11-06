@@ -63,7 +63,7 @@ private enum BatteryUsageOCR {
             // iOS aligns the right-side percentage with the first activity
             // line on many devices, below the app name. A strict same-line
             // match misses nearly every row in those screenshots.
-            guard let title = ordered.filter({ $0.x < 0.65 &&
+            guard let title = ordered.filter({ $0.x > 0.13 && $0.x < 0.65 &&
                 $0.y >= percentLine.y - 0.018 && $0.y <= percentLine.y + 0.085
                 && isPlausibleAppName($0.text) })
                 .min(by: { abs($0.y - percentLine.y) < abs($1.y - percentLine.y) }) else { continue }
@@ -97,6 +97,11 @@ private enum BatteryUsageOCR {
 
     private static func isPlausibleAppName(_ text: String) -> Bool {
         guard text.count >= 2 && text.count <= 50 else { return false }
+        // OCR sometimes interprets an app icon as text such as "©" or "io)".
+        // Real titles start to the right of the icons and contain letters.
+        guard text.unicodeScalars.filter({ CharacterSet.letters.contains($0) }).count >= 2 else {
+            return false
+        }
         let lower = text.lowercased()
         return !["on screen", "background", "battery usage", "show more", "screen active",
                   "screen idle", "daily usage", "nov ", "other battery"].contains(where: lower.contains)
