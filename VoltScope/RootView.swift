@@ -482,12 +482,7 @@ private struct InsightsView: View {
                         }
                     }
                 }
-                Panel {
-                    Label("Per-app battery usage", systemImage: "lock.shield.fill")
-                        .font(.headline).foregroundStyle(VSStyle.cyan)
-                    Text("Apple's per-app Battery Usage report isn't exposed to normal third-party apps. For a reliable app-by-app breakdown, open Settings → Battery → View All Battery Usage. VoltScope never guesses app names from overall battery drain.")
-                        .font(.subheadline).foregroundStyle(VSStyle.secondary)
-                }
+                Panel { BatteryDetectiveView() }
             }.padding(18)
         }
         .background(VSStyle.background.ignoresSafeArea())
