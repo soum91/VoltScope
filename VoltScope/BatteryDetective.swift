@@ -60,7 +60,11 @@ private enum BatteryUsageOCR {
 
         var found: [AppBatteryUsage] = []
         for (percentLine, share) in percentages {
-            guard let title = ordered.filter({ $0.x < 0.65 && abs($0.y - percentLine.y) < 0.026
+            // iOS aligns the right-side percentage with the first activity
+            // line on many devices, below the app name. A strict same-line
+            // match misses nearly every row in those screenshots.
+            guard let title = ordered.filter({ $0.x < 0.65 &&
+                $0.y >= percentLine.y - 0.018 && $0.y <= percentLine.y + 0.085
                 && isPlausibleAppName($0.text) })
                 .min(by: { abs($0.y - percentLine.y) < abs($1.y - percentLine.y) }) else { continue }
 
