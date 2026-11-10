@@ -16,6 +16,16 @@
       "iconURL": "https://raw.githubusercontent.com/soum91/VoltScope/main/VoltScope/Assets.xcassets/AppIcon.appiconset/VoltScope-1024.png",
       "versions": [
         {
+          "version": "1.1.14",
+          "buildVersion": "14",
+          "date": "2026-11-10T08:07:44Z",
+          "localizedDescription": "Read-only HID battery and charger sensors, FindMyBLE accessory integration, native widgets, and Battery Detective for locally analyzing user-selected iOS Battery Usage screenshots.",
+          "changelog": "Battery Detective: import Apple's per-app battery usage screenshots via native Photos or Files pickers, read app shares and activity times with offline Vision OCR, and flag background-heavy or brief high-share apps. Real USB-C/pack sensors and widgets remain unchanged.",
+          "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.14/VoltScope-unsigned.ipa",
+          "size": 623926,
+          "minOSVersion": "16.0"
+        },
+        {
           "version": "1.1.13",
           "buildVersion": "13",
           "date": "2026-11-06T20:59:55Z",
@@ -106,10 +116,10 @@
           "minOSVersion": "16.0"
         }
       ],
-      "version": "1.1.13",
-      "buildVersion": "13",
-      "versionDate": "2026-11-06T20:59:55Z",
-      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.13/VoltScope-unsigned.ipa",
+      "version": "1.1.14",
+      "buildVersion": "14",
+      "versionDate": "2026-11-10T08:07:44Z",
+      "downloadURL": "https://github.com/soum91/VoltScope/releases/download/v1.1.14/VoltScope-unsigned.ipa",
       "size": 623926,
       "minOSVersion": "16.0"
     }
