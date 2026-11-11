@@ -45,3 +45,16 @@ https://github.com/ResistanceTo/MiniWatts/blob/master/LICENSE
 https://github.com/ResistanceTo/MiniWatts/blob/master/NOTICE
 
 This work does not include MiniWatts' UI, widgets, history, or bundled assets.
+
+## PowerLog access research acknowledgment
+
+VoltScope's experimental PowerLog reader follows the publicly described
+`worse_query` sandbox-extension technique and compatibility observations from:
+
+- forcequitOS, **worse_query**: https://github.com/forcequitOS/worse_query
+- kolbicz, **WQFiles**: https://github.com/kolbicz/WQFiles (GPL-3.0)
+
+`PowerLogProbe.m` is an independent implementation limited to a read-only
+PowerLog access attempt, its own temporary App Group Caches swap, and SQLite
+schema introspection. No WQFiles source code or assets are copied or linked.
+The upstream projects' licenses still govern their own repositories.

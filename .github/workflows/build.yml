@@ -67,7 +67,7 @@ jobs:
           gh release view "$tag" >/dev/null 2>&1 || \
             gh release create "$tag" VoltScope-unsigned.ipa \
               --title "VoltScope 1.1.${GITHUB_RUN_NUMBER}" \
-              --notes "Unsigned iPhone IPA. Sign before sideloading. Battery Detective in Insights reads user-selected iOS Battery Usage screenshots via native Photos or Files pickers with offline OCR; app shares and background activity are labeled as Apple's statistics, not live per-process watts. Keeps real HID charger/cell power readings, FindMyBLE integration and device-ring widgets."
+              --notes "Unsigned IPA, sign before installing. New in this source build: Insights includes an experimental on-device, read-only PowerLog access probe for iOS 27 using a reversible App Group Caches swap and worse_query sandbox extension. It reports access or permission errors, available SQLite table names and any identifiable app runtime records, with verified Copy, native Share, Save to Files, and selectable diagnostics. This has not yet been verified on a signed device and is not measured per-app watts. Battery Detective screenshot OCR remains optional. Existing HID charging telemetry, FindMyBLE integration and widgets are preserved. See CHANGELOG.md and source commit for details."
       - name: Refresh FlareStore feed
         run: |
           python3 .github/scripts/publish_feed.py VoltScope-unsigned.ipa

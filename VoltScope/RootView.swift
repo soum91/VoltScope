@@ -482,7 +482,13 @@ private struct InsightsView: View {
                         }
                     }
                 }
-                Panel { BatteryDetectiveView() }
+                Panel { PowerLogInspectorView() }
+                Panel {
+                    DisclosureGroup("Optional screenshot comparison") {
+                        BatteryDetectiveView()
+                            .padding(.top, 12)
+                    }
+                }
             }.padding(18)
         }
         .background(VSStyle.background.ignoresSafeArea())
