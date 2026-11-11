@@ -170,7 +170,8 @@ static int64_t VSGrantSystemGroup(NSString *group, uint64_t flags, NSString **de
                 setClass(query, 7); // Query only our App Group; the target is the temporary symlink.
                 xpc_object_t identifier = xpc_string_create(group.UTF8String);
                 setGroup(query, identifier);
-                xpc_release(identifier);
+                // The iOS SDK bridges xpc_object_t to Objective-C under ARC;
+                // explicit xpc_release expands to forbidden -release.
                 setPart(query, 3); // Library/Caches
                 setFlags(query, flags);
                 void *result = single(query);
